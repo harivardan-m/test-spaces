@@ -1,0 +1,34 @@
+name: Whitespace Check
+
+on: [push]
+
+jobs:
+  check-whitespace:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check for whitespace errors and capture output
+        id: check_whitespace
+        run: |
+          result=$(git diff-tree --check $(git hash-object -t tree /dev/null) HEAD) || true
+          echo "::set-output name=result::$result"
+
+      - name: Post comment if whitespace errors found
+        if: steps.check_whitespace.outputs.result != ''
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const result = '${{ steps.check_whitespace.outputs.result }}';
+            const context = github.context;
+            const commit_sha = context.sha;
+            const repository = context.repo;
+            const body = 'Whitespace errors detected:\n\'\'\'\n${result}\n\'\'\'';
+            await github.rest.repos.createCommitComment({
+              owner: repository.owner,
+              repo: repository.repo,
+              commit_sha: commit_sha,
+              body: body
+            });
