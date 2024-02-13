@@ -23,9 +23,11 @@ jobs:
           script: |
             const result = '${{ steps.check_whitespace.outputs.result }}';
             const repository = github.context.repo;
+            const commit_sha = github.context.payload.after;
             const body = 'Whitespace errors detected:\n\'\'\'\n${result}\n\'\'\'';
             await github.rest.repos.createCommitComment({
               owner: repository.owner,
               repo: repository.repo,
+              commit_sha: commit_sha,
               body: body
             });
