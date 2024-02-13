@@ -22,9 +22,8 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const result = '${{ steps.check_whitespace.outputs.result }}';
-            const context = github.context;
-            const commit_sha = context.sha;
-            const repository = context.repo;
+            const commit_sha = github.context.sha;
+            const repository = github.context.repo;
             const body = 'Whitespace errors detected:\n\'\'\'\n${result}\n\'\'\'';
             await github.rest.repos.createCommitComment({
               owner: repository.owner,
