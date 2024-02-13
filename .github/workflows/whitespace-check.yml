@@ -22,7 +22,7 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const result = '${{ steps.check_whitespace.outputs.result }}';
-            const commit_sha = github.context.sha;
+            const commit_sha = github.context.payload.head_commit.id;
             const repository = github.context.repo;
             const body = 'Whitespace errors detected:\n\'\'\'\n${result}\n\'\'\'';
             await github.rest.repos.createCommitComment({
