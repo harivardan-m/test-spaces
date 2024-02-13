@@ -27,8 +27,8 @@ jobs:
             const repository = github.context.repo.repo;
             const body = 'Whitespace errors detected:\n\'\'\'\n${result}\n\'\'\'';
             await github.rest.repos.createCommitComment({
-              owner: owner,
-              repo: repo,
-              commit_sha: commit_sha,
-              body: body
+              owner,
+              repo,
+              commit_sha,
+              body
             });
